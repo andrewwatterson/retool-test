@@ -1,0 +1,21 @@
+{
+  "toolscriptVersion": "1.0.0",
+  "version": "43.0.9",
+  "pageUuid": "cf7128e2-d60e-11f0-8a12-afded9a0de1e",
+  "appTemplate": {
+    "appThemeId": 175773,
+    "pageCodeFolders": {
+      "object": {
+        "page2": {
+          "array": []
+        },
+        "page3": {
+          "array": []
+        }
+      }
+    },
+    "rootScreen": "page1",
+    "appThemeName": "Jeffrey Reference Dashboard",
+    "version": "3.376.0"
+  }
+}

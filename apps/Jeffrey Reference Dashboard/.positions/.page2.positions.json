@@ -1,0 +1,287 @@
+{
+  "appTitle2": {
+    "subcontainer": "header",
+    "height": 1.2,
+    "width": 10
+  },
+  "bounceRateCard2": {
+    "row": 1.8,
+    "col": 8,
+    "height": 2.6,
+    "width": 4,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "bounceRateIcon2": {
+    "container": "bounceRateCard2",
+    "subcontainer": "00030",
+    "col": 9,
+    "height": 1,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "bounceRateKpi2": {
+    "container": "bounceRateCard2",
+    "subcontainer": "00030",
+    "height": 0.8,
+    "width": 9,
+    "stackPosition": {
+      "object": {
+        "ordinal": 1,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "campaignStatusCard2": {
+    "row": 4.6,
+    "col": 6,
+    "height": 8.8,
+    "width": 6,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "campaignStatusChart2": {
+    "container": "campaignStatusCard2",
+    "subcontainer": "00030",
+    "row": 0.6,
+    "height": 7.2,
+    "width": 12,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "campaignTypeFilter4": {
+    "row": 0.2,
+    "col": 3,
+    "height": 0.2,
+    "stackPosition": {
+      "object": {
+        "ordinal": 1,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "campaignsTable2": {
+    "row": 13.8,
+    "height": 10.2,
+    "width": 12,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "clearFiltersButton4": {
+    "row": 0.2,
+    "col": 6,
+    "height": 1,
+    "width": 1,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "clickRateIcon2": {
+    "container": "clickThroughRateCard2",
+    "subcontainer": "00030",
+    "col": 9,
+    "height": 1,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "clickThroughRateCard2": {
+    "row": 1.8,
+    "col": 4,
+    "height": 2.6,
+    "width": 4,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "clickThroughRateKpi2": {
+    "container": "clickThroughRateCard2",
+    "subcontainer": "00030",
+    "height": 0.8,
+    "width": 9,
+    "stackPosition": {
+      "object": {
+        "ordinal": 1,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "dateRangeFilter4": {
+    "row": 0.2,
+    "height": 0.2,
+    "stackPosition": {
+      "object": {
+        "ordinal": 2,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "divider1": {
+    "row": 1.4,
+    "height": 0.2,
+    "width": 12
+  },
+  "engagementChartTitle2": {
+    "container": "engagementTrendCard2",
+    "subcontainer": "00030",
+    "height": 0.8,
+    "width": 12,
+    "stackPosition": {
+      "object": {
+        "ordinal": 1,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "engagementTrendCard2": {
+    "row": 4.6,
+    "height": 8.8,
+    "width": 6,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "engagementTrendChart2": {
+    "container": "engagementTrendCard2",
+    "subcontainer": "00030",
+    "row": 0.6,
+    "height": 7.2,
+    "width": 12,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "exportButton3": {
+    "subcontainer": "header",
+    "row": 0,
+    "col": 10,
+    "height": 1,
+    "width": 1
+  },
+  "openRateCard2": {
+    "row": 1.8,
+    "height": 2.6,
+    "width": 4,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "openRateIcon2": {
+    "container": "openRateCard2",
+    "subcontainer": "00030",
+    "col": 9,
+    "height": 1,
+    "stackPosition": {
+      "object": {
+        "ordinal": 0,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "openRateKpi2": {
+    "container": "openRateCard2",
+    "subcontainer": "00030",
+    "height": 0.8,
+    "width": 9,
+    "stackPosition": {
+      "object": {
+        "ordinal": 1,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "refreshButton2": {
+    "subcontainer": "header",
+    "col": 11,
+    "height": 1,
+    "width": 1
+  },
+  "statusChartTitle2": {
+    "container": "campaignStatusCard2",
+    "subcontainer": "00030",
+    "height": 0.8,
+    "width": 12,
+    "stackPosition": {
+      "object": {
+        "ordinal": 1,
+        "widthType": "fixed",
+        "width": 0,
+        "height": 0
+      }
+    }
+  }
+}
