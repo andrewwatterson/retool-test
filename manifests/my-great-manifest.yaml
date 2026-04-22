@@ -1,2 +1,5 @@
 version: 1.0.0
 name: my-great-manifest
+apps:
+  - uuid: cf7128e2-d60e-11f0-8a12-afded9a0de1e
+    release: latest
