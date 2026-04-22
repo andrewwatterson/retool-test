@@ -218,7 +218,6 @@
   },
   "exportButton3": {
     "subcontainer": "header",
-    "row": 0,
     "col": 10,
     "height": 1,
     "width": 1
