@@ -49,7 +49,7 @@
   >
     <Text
       id="appTitle"
-      value="# Spicy Changed Dashboard 2"
+      value="# Spicy Changed Dashboard 3.5"
       verticalAlign="center"
     />
     <Button
