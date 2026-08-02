@@ -9,6 +9,7 @@
 //   type                   replace and edit      F2 / dblclick edit in place
 //   cmd/ctrl+C / X / V     copy / cut / paste    cmd/ctrl+D    fill down
 //   delete / backspace     clear the range       cmd/ctrl+Z    undo (shift: redo)
+//   shift/alt+enter        soft return, in a multiline column only
 //
 // Paste grows the grid: dropping 40 rows onto the last row appends what it
 // needs. Cells are divs in a CSS grid rather than a <table> so the range tint
@@ -31,6 +32,12 @@ export type GridColumn = {
   mono?: boolean
   /** Empty cells in this column mark the row invalid. */
   required?: boolean
+  /**
+   * Prose column: the editor is a textarea that takes soft returns, and it
+   * floats over the rows below rather than growing the row. The closed cell
+   * still renders on one line — hover for the full value.
+   */
+  multiline?: boolean
 }
 
 export type GridRow = {
@@ -55,6 +62,18 @@ export function makeRow(columns: GridColumn[], seed?: Record<string, string>): G
 
 export function isRowBlank(row: GridRow): boolean {
   return Object.values(row.cells).every((v) => v.trim() === '')
+}
+
+/** Grow a multiline editor to its content. CSS caps it and scrolls past that. */
+function autosize(el: HTMLInputElement | HTMLTextAreaElement | null): void {
+  if (!(el instanceof HTMLTextAreaElement)) return
+  const before = el.style.height
+  el.style.height = 'auto'
+  el.style.height = `${el.scrollHeight}px`
+  // An editor opened on the last visible row hangs past the bottom of the
+  // grid's scroll box. Nudge it into view, but only when it actually changed
+  // height, so ordinary typing doesn't jitter the grid.
+  if (el.style.height !== before) el.scrollIntoView({ block: 'nearest' })
 }
 
 export function DataGrid({
@@ -84,7 +103,11 @@ export function DataGrid({
   const dragging = useRef(false)
   const container = useRef<HTMLDivElement>(null)
   const activeCell = useRef<HTMLDivElement>(null)
-  const editInput = useRef<HTMLInputElement>(null)
+  // Either editor element, so it's set through a callback ref rather than
+  // handed to both — a ref object is invariant in its element type.
+  const editInput = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null)
+  /** Caret position to restore after a draft change React has yet to render. */
+  const pendingCaret = useRef<number | null>(null)
 
   // Undo/redo hold whole-grid snapshots. The grids here are tens of rows, so
   // the memory is irrelevant and the correctness is free.
@@ -154,7 +177,21 @@ export function DataGrid({
     input.focus()
     if (selectAllOnEdit.current) input.select()
     else input.setSelectionRange(input.value.length, input.value.length)
+    autosize(input)
   }, [editing])
+
+  // A soft return sets the draft and asks for the caret to land after it, which
+  // can only happen once React has rendered the longer value.
+  useLayoutEffect(() => {
+    const input = editInput.current
+    if (input === null) return
+    const caret = pendingCaret.current
+    if (caret !== null) {
+      input.setSelectionRange(caret, caret)
+      pendingCaret.current = null
+    }
+    autosize(input)
+  }, [draft])
 
   const setCell = useCallback(
     (list: GridRow[], r: number, c: number, value: string): GridRow[] => {
@@ -182,6 +219,22 @@ export function DataGrid({
     selectAllOnEdit.current = initial === undefined
     setEditing(at)
     setDraft(initial ?? row.cells[column.key] ?? '')
+  }
+
+  /**
+   * Insert a soft return at the caret.
+   *
+   * Done by hand rather than left to the textarea: Enter is preventDefault-ed
+   * so plain Enter can still commit, and Alt+Enter doesn't reliably produce
+   * input of its own anyway. Both modifiers therefore behave identically.
+   */
+  function insertNewline() {
+    const el = editInput.current
+    if (el === null) return
+    const start = el.selectionStart ?? draft.length
+    const end = el.selectionEnd ?? start
+    pendingCaret.current = start + 1
+    setDraft(`${draft.slice(0, start)}\n${draft.slice(end)}`)
   }
 
   function commitEdit(then: 'down' | 'right' | 'stay' | 'up' | 'left') {
@@ -291,7 +344,8 @@ export function DataGrid({
       // While editing, the input owns most keys; only commit/cancel here.
       if (e.key === 'Enter') {
         e.preventDefault()
-        commitEdit('down')
+        if (columns[editing.c]?.multiline === true && (e.shiftKey || e.altKey)) insertNewline()
+        else commitEdit('down')
       } else if (e.key === 'Escape') {
         e.preventDefault()
         setEditing(null)
@@ -481,6 +535,9 @@ export function DataGrid({
               if (selected) classes.push('iv-grid-cell--sel')
               if (isActive) classes.push('iv-grid-cell--active')
               if (isEditing) classes.push('iv-grid-cell--editing')
+              // The floating editor needs the cell to stop clipping, and the
+              // cell's own ring would cut across it at the first line.
+              if (isEditing && col.multiline === true) classes.push('iv-grid-cell--editing-multi')
               if (invalid) classes.push('iv-grid-cell--invalid')
               if (dirtyCells?.has(`${row.key}:${col.key}`) === true) classes.push('iv-grid-cell--dirty')
               if (col.mono === true) classes.push('iv-mono')
@@ -497,9 +554,21 @@ export function DataGrid({
                   onDoubleClick={() => beginEdit({ r, c })}
                   title={value === '' ? undefined : value}
                 >
-                  {isEditing ? (
+                  {isEditing && col.multiline === true ? (
+                    <textarea
+                      ref={(el) => {
+                        editInput.current = el
+                      }}
+                      rows={1}
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onBlur={() => commitEdit('stay')}
+                    />
+                  ) : isEditing ? (
                     <input
-                      ref={editInput}
+                      ref={(el) => {
+                        editInput.current = el
+                      }}
                       value={draft}
                       onChange={(e) => setDraft(e.target.value)}
                       onBlur={() => commitEdit('stay')}
@@ -525,6 +594,12 @@ export function DataGrid({
           </Button>
           <span className="iv-hint">
             <Kbd>⌘V</Kbd> paste grows the grid · <Kbd>⌘D</Kbd> fill down · <Kbd>⌘Z</Kbd> undo
+            {columns.some((c) => c.multiline === true) && (
+              <>
+                {' '}
+                · <Kbd>⇧↵</Kbd> soft return
+              </>
+            )}
           </span>
           {footerNote !== undefined && <span className="iv-hint" style={{ marginLeft: 'auto' }}>{footerNote}</span>}
         </div>
