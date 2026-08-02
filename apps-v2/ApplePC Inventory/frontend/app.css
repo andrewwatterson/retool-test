@@ -1,0 +1,1283 @@
+/* Inventory dashboard styles.
+ *
+ * Built on the org theme tokens in orgTheme.css (HSL triplets consumed as
+ * hsl(var(--token)), light and dark). There is no tailwind.config.js in this
+ * checkout, so Tailwind classes would not compile — everything here is real
+ * CSS. All selectors are `iv-` prefixed to stay clear of Retool's own styles.
+ *
+ * The bias throughout is density: this is a single-operator inventory tool, so
+ * rows are tight, labels are small, and nothing is padded for friendliness at
+ * the cost of rows-on-screen.
+ */
+
+.iv-app {
+  --iv-row: 30px;
+  --iv-cell: 27px;
+  --iv-gap: 8px;
+  --iv-radius: var(--radius-sm, 0.25rem);
+  --iv-mono: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  line-height: 1.45;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  -webkit-font-smoothing: antialiased;
+}
+
+.iv-app *,
+.iv-app *::before,
+.iv-app *::after {
+  box-sizing: border-box;
+}
+
+.iv-app :focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 1px;
+}
+
+/* ---------------------------------------------------------------- shell --- */
+
+.iv-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 14px;
+  height: 44px;
+  flex: 0 0 auto;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+}
+
+.iv-wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.iv-wordmark span {
+  color: hsl(var(--muted-foreground));
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+.iv-nav {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.iv-nav button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: hsl(var(--muted-foreground));
+  padding: 5px 10px;
+  border-radius: var(--iv-radius);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.iv-nav button:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+
+.iv-nav button[aria-current='page'] {
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  font-weight: 500;
+}
+
+.iv-header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: hsl(var(--muted-foreground));
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+}
+
+.iv-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------- controls --- */
+
+.iv-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 12.5px;
+  border-radius: var(--iv-radius);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 90ms ease;
+}
+
+.iv-btn:hover:not(:disabled) {
+  background: hsl(var(--accent));
+}
+
+.iv-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.iv-btn--primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: transparent;
+  font-weight: 500;
+}
+
+.iv-btn--primary:hover:not(:disabled) {
+  background: hsl(var(--primary) / 0.88);
+}
+
+.iv-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+}
+
+.iv-btn--ghost:hover:not(:disabled) {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+
+.iv-btn--danger {
+  color: hsl(var(--destructive));
+}
+
+.iv-btn--danger:hover:not(:disabled) {
+  background: hsl(var(--destructive) / 0.1);
+}
+
+.iv-btn--sm {
+  height: 24px;
+  padding: 0 7px;
+  font-size: 12px;
+}
+
+.iv-input,
+.iv-select {
+  appearance: none;
+  height: 28px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 12.5px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--iv-radius);
+  min-width: 0;
+}
+
+.iv-input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.iv-select {
+  padding-right: 22px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 12px) calc(50% + 1px),
+    calc(100% - 8px) calc(50% + 1px);
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+textarea.iv-input {
+  height: auto;
+  min-height: 56px;
+  padding: 6px 8px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.iv-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 4px;
+}
+
+.iv-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Search box with a leading glyph and a clear affordance. */
+.iv-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  max-width: 380px;
+  min-width: 160px;
+}
+
+.iv-search .iv-input {
+  width: 100%;
+  padding-left: 28px;
+}
+
+.iv-search-icon {
+  position: absolute;
+  left: 8px;
+  display: flex;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+}
+
+.iv-search-clear {
+  position: absolute;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+}
+
+.iv-search-clear:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+
+/* --------------------------------------------------------------- toolbar --- */
+
+.iv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--iv-gap);
+  padding: 8px 12px;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+}
+
+.iv-toolbar-sep {
+  width: 1px;
+  height: 18px;
+  background: hsl(var(--border));
+  flex: 0 0 auto;
+}
+
+.iv-toolbar-spacer {
+  margin-left: auto;
+}
+
+.iv-count {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.iv-count strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+/* A checkbox that reads as a toggle chip — used for "hide Partial". */
+.iv-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 9px;
+  font-size: 12.5px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--iv-radius);
+  background: hsl(var(--card));
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.iv-check:hover {
+  background: hsl(var(--accent));
+}
+
+.iv-check input {
+  margin: 0;
+  accent-color: hsl(var(--primary));
+}
+
+.iv-check--on {
+  background: hsl(var(--secondary));
+  border-color: hsl(var(--border));
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------ multiselect --- */
+
+.iv-ms {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.iv-ms-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  max-width: 230px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 12.5px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--iv-radius);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.iv-ms-trigger:hover {
+  background: hsl(var(--accent));
+}
+
+.iv-ms-trigger--active {
+  background: hsl(var(--secondary));
+  font-weight: 500;
+}
+
+.iv-ms-trigger .iv-ms-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iv-ms-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.iv-ms-panel {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 268px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md, 0.375rem);
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  box-shadow: var(--shadow-retool-md);
+  overflow: hidden;
+}
+
+.iv-ms-panel--right {
+  left: auto;
+  right: 0;
+}
+
+.iv-ms-search {
+  padding: 6px;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.iv-ms-search .iv-input {
+  width: 100%;
+  height: 26px;
+}
+
+.iv-ms-list {
+  max-height: 264px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.iv-ms-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.iv-ms-option:hover,
+.iv-ms-option--cursor {
+  background: hsl(var(--accent));
+}
+
+.iv-ms-option input {
+  margin: 0;
+  flex: 0 0 auto;
+  accent-color: hsl(var(--primary));
+  pointer-events: none;
+}
+
+.iv-ms-option-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iv-ms-option-count {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: hsl(var(--muted-foreground));
+  font-variant-numeric: tabular-nums;
+}
+
+.iv-ms-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 6px;
+  border-top: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.4);
+}
+
+.iv-ms-empty {
+  padding: 14px 8px;
+  text-align: center;
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+}
+
+/* ------------------------------------------------------------- data table --- */
+
+.iv-tablewrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  position: relative;
+}
+
+.iv-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.iv-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--card));
+  padding: 0 10px;
+  height: 28px;
+  white-space: nowrap;
+  border-bottom: 1px solid hsl(var(--border));
+  user-select: none;
+}
+
+.iv-table thead th.iv-sortable {
+  cursor: pointer;
+}
+
+.iv-table thead th.iv-sortable:hover {
+  color: hsl(var(--foreground));
+  background: hsl(var(--accent));
+}
+
+.iv-sort-arrow {
+  display: inline-block;
+  margin-left: 4px;
+  color: hsl(var(--foreground));
+}
+
+.iv-table tbody td {
+  padding: 0 10px;
+  height: var(--iv-row);
+  border-bottom: 1px solid hsl(var(--border) / 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 340px;
+}
+
+.iv-table tbody tr {
+  cursor: pointer;
+}
+
+.iv-table tbody tr:hover td {
+  background: hsl(var(--accent) / 0.6);
+}
+
+.iv-table tbody tr[aria-selected='true'] td {
+  background: hsl(var(--secondary));
+}
+
+.iv-table tbody tr[aria-selected='true'] td:first-child {
+  box-shadow: inset 2px 0 0 hsl(var(--primary));
+}
+
+.iv-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.iv-mono {
+  font-family: var(--iv-mono);
+  font-size: 11.5px;
+}
+
+.iv-muted {
+  color: hsl(var(--muted-foreground));
+}
+
+.iv-name {
+  font-weight: 500;
+}
+
+.iv-version {
+  color: hsl(var(--muted-foreground));
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+/* ------------------------------------------------------------ completeness --- */
+
+/* Completeness is ordinal, so it reads as a 4-segment meter rather than a
+ * colour-coded tag. Non-Original is a caveat about authenticity rather than a
+ * rank, so it gets its own hue instead of a position on the scale. */
+.iv-comp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.iv-meter {
+  display: inline-flex;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.iv-meter i {
+  width: 4px;
+  height: 11px;
+  border-radius: 1px;
+  background: hsl(var(--border));
+}
+
+.iv-meter i.on {
+  background: hsl(var(--muted-foreground));
+}
+
+.iv-comp--complete .iv-meter i.on {
+  background: hsl(var(--success));
+}
+
+.iv-comp--mostly .iv-meter i.on {
+  background: hsl(var(--success) / 0.7);
+}
+
+.iv-comp--nonoriginal .iv-meter i.on {
+  background: hsl(var(--warning));
+}
+
+.iv-comp-text {
+  font-size: 12px;
+}
+
+.iv-comp--unset .iv-comp-text {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.iv-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.iv-badge--warn {
+  background: hsl(var(--warning) / 0.16);
+  color: hsl(var(--warning-foreground));
+}
+
+.iv-badge--outline {
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  font-weight: 400;
+}
+
+/* ------------------------------------------------------------------ split --- */
+
+.iv-split {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.iv-split-left {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.iv-split-right {
+  flex: 0 0 auto;
+  width: var(--iv-detail-width, 460px);
+  min-width: 320px;
+  max-width: 60%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  min-height: 0;
+}
+
+.iv-resizer {
+  flex: 0 0 auto;
+  width: 5px;
+  margin: 0 -2px;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 5;
+  position: relative;
+}
+
+.iv-resizer:hover,
+.iv-resizer[data-dragging='true'] {
+  background: hsl(var(--ring) / 0.35);
+}
+
+/* ----------------------------------------------------------------- detail --- */
+
+.iv-detail-head {
+  padding: 12px 14px;
+  border-bottom: 1px solid hsl(var(--border));
+  flex: 0 0 auto;
+}
+
+.iv-detail-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.iv-detail-title h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.iv-detail-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+
+.iv-detail-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.iv-section {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.iv-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 0.35);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.iv-section-head .iv-btn {
+  margin-left: auto;
+}
+
+.iv-props {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 0;
+  padding: 4px 14px 10px;
+}
+
+.iv-props dt {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  padding: 4px 0;
+}
+
+.iv-props dd {
+  margin: 0;
+  font-size: 12.5px;
+  padding: 4px 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.iv-empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  font-size: 12.5px;
+}
+
+.iv-empty-strong {
+  display: block;
+  color: hsl(var(--foreground));
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.iv-placeholder {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  font-size: 12.5px;
+}
+
+/* ------------------------------------------------------------- groups view --- */
+
+.iv-groups {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 12px 40px;
+}
+
+.iv-group {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md, 0.375rem);
+  background: hsl(var(--card));
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.iv-group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.iv-group-head:hover {
+  background: hsl(var(--accent) / 0.6);
+}
+
+.iv-group-chevron {
+  flex: 0 0 auto;
+  color: hsl(var(--muted-foreground));
+  display: flex;
+  transition: transform 120ms ease;
+}
+
+.iv-group-chevron[data-open='true'] {
+  transform: rotate(90deg);
+}
+
+.iv-group-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iv-group-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+
+.iv-group-body {
+  border-top: 1px solid hsl(var(--border));
+}
+
+.iv-group-body .iv-table tbody td {
+  border-bottom: 1px solid hsl(var(--border) / 0.4);
+}
+
+.iv-group-body .iv-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.iv-piece-match td {
+  background: hsl(var(--warning) / 0.09);
+}
+
+/* ------------------------------------------------------------------- grid --- */
+
+/* The editable grid. Cells are divs in a CSS grid rather than a <table> so a
+ * range selection can be painted without fighting table layout. */
+.iv-grid {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md, 0.375rem);
+  background: hsl(var(--card));
+  overflow: auto;
+  max-height: 100%;
+  position: relative;
+}
+
+.iv-grid-row {
+  display: grid;
+  border-bottom: 1px solid hsl(var(--border) / 0.55);
+}
+
+.iv-grid-row:last-child {
+  border-bottom: 0;
+}
+
+.iv-grid-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: hsl(var(--card));
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.iv-grid-head .iv-grid-cell {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  height: 26px;
+  user-select: none;
+  cursor: default;
+}
+
+.iv-grid-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--iv-cell);
+  padding: 0 7px;
+  border-right: 1px solid hsl(var(--border) / 0.55);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12.5px;
+  cursor: cell;
+  outline: none;
+}
+
+.iv-grid-cell:last-child {
+  border-right: 0;
+}
+
+/* Row gutter: row number, and the row's delete affordance on hover. */
+.iv-grid-gutter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--iv-cell);
+  border-right: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.35);
+  color: hsl(var(--muted-foreground));
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  cursor: default;
+  position: relative;
+}
+
+.iv-grid-row:hover .iv-grid-gutter {
+  background: hsl(var(--muted) / 0.7);
+}
+
+.iv-grid-del {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: hsl(var(--muted));
+  color: hsl(var(--destructive));
+  cursor: pointer;
+}
+
+.iv-grid-row:hover .iv-grid-del {
+  display: flex;
+}
+
+.iv-grid-cell--sel {
+  background: hsl(var(--ring) / 0.11);
+}
+
+/* The anchor cell of a selection gets the visible ring; the rest of the range
+ * is a tint. Box-shadow rather than outline so adjacent cells don't clip it. */
+.iv-grid-cell--active {
+  box-shadow: inset 0 0 0 2px hsl(var(--ring));
+  background: hsl(var(--card));
+  z-index: 2;
+}
+
+.iv-grid-cell--editing {
+  padding: 0;
+  box-shadow: inset 0 0 0 2px hsl(var(--ring));
+  z-index: 3;
+}
+
+.iv-grid-cell--editing input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  padding: 0 7px;
+  font: inherit;
+  font-size: 12.5px;
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+}
+
+.iv-grid-cell--dirty::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: hsl(var(--warning));
+}
+
+.iv-grid-cell--invalid {
+  background: hsl(var(--destructive) / 0.1);
+}
+
+.iv-grid-placeholder {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.iv-grid-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-top: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.3);
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+}
+
+.iv-hint {
+  font-size: 11.5px;
+  color: hsl(var(--muted-foreground));
+}
+
+.iv-kbd {
+  display: inline-block;
+  padding: 0 4px;
+  border: 1px solid hsl(var(--border));
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  background: hsl(var(--card));
+  font-family: var(--iv-mono);
+  font-size: 10.5px;
+  line-height: 15px;
+  color: hsl(var(--foreground));
+}
+
+/* -------------------------------------------------------------- new product --- */
+
+.iv-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 16px 60px;
+}
+
+.iv-form-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.iv-form h1 {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.iv-form-lede {
+  margin: 0 0 16px;
+  color: hsl(var(--muted-foreground));
+  font-size: 12.5px;
+}
+
+.iv-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md, 0.375rem);
+  background: hsl(var(--card));
+  margin-bottom: 14px;
+}
+
+.iv-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid hsl(var(--border));
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.iv-card-head .iv-hint {
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.iv-card-body {
+  padding: 12px;
+}
+
+.iv-formgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: 10px 12px;
+}
+
+.iv-formgrid--wide {
+  grid-column: 1 / -1;
+}
+
+.iv-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0 0;
+}
+
+.iv-actions .iv-hint {
+  margin-left: auto;
+}
+
+.iv-error {
+  padding: 8px 10px;
+  border: 1px solid hsl(var(--destructive) / 0.45);
+  border-radius: var(--iv-radius);
+  background: hsl(var(--destructive) / 0.09);
+  color: hsl(var(--destructive));
+  font-size: 12.5px;
+  margin-bottom: 12px;
+}
+
+/* ------------------------------------------------------------------ misc --- */
+
+.iv-overview {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.iv-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  max-width: 1180px;
+  margin: 0 auto 14px;
+}
+
+.iv-stat {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md, 0.375rem);
+  background: hsl(var(--card));
+  padding: 10px 12px;
+}
+
+.iv-stat-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 3px;
+}
+
+.iv-stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.iv-stat-sub {
+  font-size: 11.5px;
+  color: hsl(var(--muted-foreground));
+  margin-top: 1px;
+}
+
+.iv-bars {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.iv-bar-row {
+  display: grid;
+  grid-template-columns: 128px 1fr 56px;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+  font-size: 12.5px;
+}
+
+.iv-bar-track {
+  height: 8px;
+  border-radius: 2px;
+  background: hsl(var(--muted));
+  overflow: hidden;
+}
+
+.iv-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: hsl(var(--chart-2));
+}
+
+.iv-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid hsl(var(--border));
+  border-top-color: hsl(var(--muted-foreground));
+  border-radius: 50%;
+  animation: iv-spin 620ms linear infinite;
+}
+
+@keyframes iv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.iv-loading-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  background: transparent;
+  z-index: 10;
+}
+
+.iv-loading-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: hsl(var(--primary) / 0.5);
+  animation: iv-slide 1.1s ease-in-out infinite;
+}
+
+@keyframes iv-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.iv-pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-top: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  flex: 0 0 auto;
+}

@@ -1,0 +1,75 @@
+{
+  "private": true,
+  "retool": {
+    "app": {
+      "uuid": "830ef0f2-8b02-11f1-b205-6fdd42e20c46",
+      "name": "ApplePC Inventory",
+      "resourceReferencesByFile": {
+        "/backend/inventory/createProduct.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/getFilterOptions.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/getOrphanPieces.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/getProduct.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/getStats.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/listProducts.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/savePieces.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/searchPieces.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ],
+        "/backend/inventory/updateProduct.ts": [
+          {
+            "name": "f05f03aa-5883-4fc8-9a09-978a15373f98",
+            "displayName": "aw.com MySQL",
+            "type": "mysql"
+          }
+        ]
+      },
+      "appIdentifier": "applepc-inventory"
+    }
+  }
+}
