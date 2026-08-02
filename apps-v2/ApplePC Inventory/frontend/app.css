@@ -765,8 +765,24 @@ textarea.iv-input {
   z-index: 1;
 }
 
+/* The first right-hand item takes the free space; anything after it sits with
+ * it, so the head reads as a title on the left and a button group on the
+ * right rather than items strung out across the bar. */
+.iv-section-head .iv-hint,
 .iv-section-head .iv-btn {
   margin-left: auto;
+}
+
+.iv-section-head .iv-hint ~ .iv-hint,
+.iv-section-head .iv-hint ~ .iv-btn,
+.iv-section-head .iv-btn ~ .iv-btn {
+  margin-left: 0;
+}
+
+.iv-section-head .iv-hint {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
 }
 
 .iv-props {
@@ -1070,18 +1086,6 @@ textarea.iv-input {
   font-style: italic;
 }
 
-.iv-grid-foot {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-top: 1px solid hsl(var(--border));
-  background: hsl(var(--muted) / 0.3);
-  position: sticky;
-  bottom: 0;
-  z-index: 3;
-}
-
 .iv-hint {
   font-size: 11.5px;
   color: hsl(var(--muted-foreground));
@@ -1147,8 +1151,16 @@ textarea.iv-input {
   color: hsl(var(--muted-foreground));
 }
 
-.iv-card-head .iv-hint {
+.iv-card-head .iv-hint,
+.iv-card-head .iv-btn {
   margin-left: auto;
+}
+
+.iv-card-head .iv-hint ~ .iv-btn {
+  margin-left: 0;
+}
+
+.iv-card-head .iv-hint {
   text-transform: none;
   letter-spacing: 0;
   font-weight: 400;
