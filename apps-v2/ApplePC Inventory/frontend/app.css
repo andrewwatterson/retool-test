@@ -1017,6 +1017,39 @@ textarea.iv-input {
   color: hsl(var(--foreground));
 }
 
+/* A prose column edits in a textarea that floats over the rows below, so the
+ * grid keeps its fixed row height while the editor grows to its content. The
+ * cell has to stop clipping for that, and its own inset ring would cut across
+ * the editor at the first line — the ring moves onto the textarea instead. */
+.iv-grid-cell--editing-multi {
+  overflow: visible;
+  box-shadow: none;
+}
+
+.iv-grid-cell--editing textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: 100%;
+  min-height: var(--iv-cell);
+  max-height: 156px;
+  overflow-y: auto;
+  resize: none;
+  border: 0;
+  outline: none;
+  border-radius: 2px;
+  padding: 5px 7px;
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.45;
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  box-shadow:
+    0 0 0 2px hsl(var(--ring)),
+    0 6px 16px hsl(var(--foreground) / 0.14);
+}
+
 .iv-grid-cell--dirty::after {
   content: '';
   position: absolute;

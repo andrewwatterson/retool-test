@@ -16,8 +16,10 @@ export const PIECE_GRID_COLUMNS: GridColumn[] = [
   { key: 'serial', header: 'Serial', width: 'minmax(96px, 0.7fr)', mono: true },
   { key: 'year', header: 'Year', width: '68px' },
   { key: 'location', header: 'Location', width: 'minmax(110px, 0.8fr)' },
-  { key: 'condition_notes', header: 'Condition', width: 'minmax(120px, 1fr)' },
-  { key: 'notes', header: 'Notes', width: 'minmax(140px, 1.2fr)' },
+  // The two prose columns: long enough to want line breaks, so they edit in a
+  // textarea that takes ⇧↵. Everything else is a single value.
+  { key: 'condition_notes', header: 'Condition', width: 'minmax(120px, 1fr)', multiline: true },
+  { key: 'notes', header: 'Notes', width: 'minmax(140px, 1.2fr)', multiline: true },
   { key: 'image', header: 'Image', width: 'minmax(90px, 0.6fr)', mono: true },
 ]
 
