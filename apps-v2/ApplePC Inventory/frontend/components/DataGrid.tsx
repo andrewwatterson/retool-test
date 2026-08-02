@@ -140,8 +140,20 @@ export function DataGrid({
     if (editing === null) activeCell.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   }, [anchor, focus, editing])
 
+  // Where the caret lands depends on how the edit was opened. F2, Enter and
+  // double-click open on the cell's existing value, and select-all is what a
+  // spreadsheet does there. An edit opened by typing already holds that first
+  // character, so selecting it would make the second keystroke replace it —
+  // the caret goes after it instead.
+  const selectAllOnEdit = useRef(true)
+
   useLayoutEffect(() => {
-    if (editing !== null) editInput.current?.select()
+    if (editing === null) return
+    const input = editInput.current
+    if (input === null) return
+    input.focus()
+    if (selectAllOnEdit.current) input.select()
+    else input.setSelectionRange(input.value.length, input.value.length)
   }, [editing])
 
   const setCell = useCallback(
@@ -167,6 +179,7 @@ export function DataGrid({
     const column = columns[at.c]
     const row = rows[at.r]
     if (!column || !row) return
+    selectAllOnEdit.current = initial === undefined
     setEditing(at)
     setDraft(initial ?? row.cells[column.key] ?? '')
   }
