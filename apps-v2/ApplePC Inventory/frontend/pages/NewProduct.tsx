@@ -10,7 +10,7 @@
 // there are only one or two.
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Check, ClipboardPaste, Loader2, Search } from 'lucide-react'
+import { Check, ClipboardPaste, Loader2, Plus, Search } from 'lucide-react'
 import {
   useCreateProduct,
   useGetFilterOptions,
@@ -29,7 +29,12 @@ import {
 } from '../lib/types'
 import { Button, Field, Kbd } from '../components/ui'
 import { DataGrid, isRowBlank, makeRow, type GridRow } from '../components/DataGrid'
-import { PIECE_GRID_COLUMNS, pieceToRow, rowToPiece } from '../components/pieceColumns'
+import {
+  PIECE_GRID_COLUMNS,
+  blankPieceRow,
+  pieceToRow,
+  rowToPiece,
+} from '../components/pieceColumns'
 
 const MIN_ROWS = 4
 
@@ -223,6 +228,13 @@ export function NewProduct({ onCreated }: { onCreated: (uuid: string) => void })
               {filledPieces} {filledPieces === 1 ? 'row' : 'rows'} with a part name · paste with{' '}
               <Kbd>⌘V</Kbd>
             </span>
+            <Button
+              size="sm"
+              onClick={() => setRows((prev) => [...prev, blankPieceRow()])}
+              title="Append a blank row"
+            >
+              <Plus size={11} /> Add row
+            </Button>
           </div>
           <div className="iv-card-body">
             <ClonePieces
@@ -241,9 +253,6 @@ export function NewProduct({ onCreated }: { onCreated: (uuid: string) => void })
                 rows={rows}
                 onRowsChange={setRows}
                 minRows={MIN_ROWS}
-                footerNote={
-                  filledPieces === 0 ? 'At least one piece needs a part name' : undefined
-                }
               />
             </div>
           </div>

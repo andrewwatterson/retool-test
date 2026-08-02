@@ -6,7 +6,7 @@
 // into a new one — the flow this app is mostly for.
 
 import { useEffect, useMemo, useState } from 'react'
-import { Save, Undo2, X } from 'lucide-react'
+import { Plus, Save, Undo2, X } from 'lucide-react'
 import {
   useGetProduct,
   useSavePieces,
@@ -23,7 +23,7 @@ import {
 } from '../lib/types'
 import { Button, Completeness, Empty, Field, Spinner } from './ui'
 import { DataGrid, isRowBlank, type GridRow } from './DataGrid'
-import { PIECE_GRID_COLUMNS, pieceToRow, rowToPiece } from './pieceColumns'
+import { PIECE_GRID_COLUMNS, blankPieceRow, pieceToRow, rowToPiece } from './pieceColumns'
 
 type Loaded = { product: Product | null; pieces: Piece[] }
 
@@ -346,6 +346,19 @@ export function ProductDetail({
           <div className="iv-section-head">
             Pieces
             {hasPieceChanges && (
+              <span className="iv-hint">
+                {dirtyCells.size} edited cell{dirtyCells.size === 1 ? '' : 's'}
+                {deletedIds.length > 0 && `, ${deletedIds.length} deleted`}
+              </span>
+            )}
+            <Button
+              size="sm"
+              onClick={() => setRows((prev) => [...prev, blankPieceRow()])}
+              title="Append a blank row"
+            >
+              <Plus size={11} /> Add row
+            </Button>
+            {hasPieceChanges && (
               <>
                 <Button size="sm" variant="ghost" onClick={revertPieces} disabled={saving}>
                   <Undo2 size={11} /> Revert
@@ -367,13 +380,6 @@ export function ProductDetail({
                 // Persisted rows need an explicit delete; unsaved ones just go.
                 if (row.id !== null) setDeletedIds((ids) => [...ids, row.id as number])
               }}
-              footerNote={
-                hasPieceChanges
-                  ? `${dirtyCells.size} edited cell${dirtyCells.size === 1 ? '' : 's'}${
-                      deletedIds.length > 0 ? `, ${deletedIds.length} deleted` : ''
-                    }`
-                  : 'Select rows and press ⌘C to copy into a new product'
-              }
             />
           </div>
         </div>

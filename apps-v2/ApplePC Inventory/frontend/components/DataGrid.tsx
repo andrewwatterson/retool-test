@@ -19,8 +19,7 @@
 // Selection, editing, and the undo stack are internal.
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
-import { Button, Kbd } from './ui'
+import { Trash2 } from 'lucide-react'
 import { encodeTable, parseTable } from './clipboard'
 
 export type GridColumn = {
@@ -83,7 +82,6 @@ export function DataGrid({
   dirtyCells,
   minRows = 0,
   onDeleteRow,
-  footerNote,
 }: {
   columns: GridColumn[]
   rows: GridRow[]
@@ -94,7 +92,6 @@ export function DataGrid({
   minRows?: number | undefined
   /** Called instead of a plain splice, so a persisted row can be tracked. */
   onDeleteRow?: ((row: GridRow) => void) | undefined
-  footerNote?: string | undefined
 }) {
   const [anchor, setAnchor] = useState<Cursor>({ r: 0, c: 0 })
   const [focus, setFocus] = useState<Cursor>({ r: 0, c: 0 })
@@ -490,120 +487,98 @@ export function DataGrid({
   const template = `36px ${columns.map((c) => c.width).join(' ')}`
 
   return (
-    <>
-      <div
-        className="iv-grid"
-        ref={container}
-        tabIndex={0}
-        onKeyDown={onKeyDown}
-        onCopy={onCopy}
-        onCut={onCut}
-        onPaste={onPaste}
-      >
-        <div className="iv-grid-row iv-grid-head" style={{ gridTemplateColumns: template }}>
-          <div className="iv-grid-gutter" />
-          {columns.map((col) => (
-            <div className="iv-grid-cell" key={col.key} title={col.header}>
-              {col.header}
-              {col.required === true && <span className="iv-muted"> *</span>}
-            </div>
-          ))}
-        </div>
-
-        {rows.map((row, r) => (
-          <div className="iv-grid-row" key={row.key} style={{ gridTemplateColumns: template }}>
-            <div className="iv-grid-gutter">
-              {r + 1}
-              <button
-                className="iv-grid-del"
-                title="Delete row"
-                onClick={() => deleteRow(r)}
-                tabIndex={-1}
-              >
-                <Trash2 size={11} />
-              </button>
-            </div>
-
-            {columns.map((col, c) => {
-              const selected = r >= rect.top && r <= rect.bottom && c >= rect.left && c <= rect.right
-              const isActive = focus.r === r && focus.c === c
-              const isEditing = editing !== null && editing.r === r && editing.c === c
-              const value = row.cells[col.key] ?? ''
-              const invalid = col.required === true && value.trim() === '' && !isRowBlank(row)
-
-              const classes = ['iv-grid-cell']
-              if (selected) classes.push('iv-grid-cell--sel')
-              if (isActive) classes.push('iv-grid-cell--active')
-              if (isEditing) classes.push('iv-grid-cell--editing')
-              // The floating editor needs the cell to stop clipping, and the
-              // cell's own ring would cut across it at the first line.
-              if (isEditing && col.multiline === true) classes.push('iv-grid-cell--editing-multi')
-              if (invalid) classes.push('iv-grid-cell--invalid')
-              if (dirtyCells?.has(`${row.key}:${col.key}`) === true) classes.push('iv-grid-cell--dirty')
-              if (col.mono === true) classes.push('iv-mono')
-
-              return (
-                <div
-                  key={col.key}
-                  ref={isActive ? activeCell : undefined}
-                  className={classes.join(' ')}
-                  onMouseDown={(e) => onCellMouseDown(r, c, e)}
-                  onMouseEnter={() => {
-                    if (dragging.current) setFocus({ r, c })
-                  }}
-                  onDoubleClick={() => beginEdit({ r, c })}
-                  title={value === '' ? undefined : value}
-                >
-                  {isEditing && col.multiline === true ? (
-                    <textarea
-                      ref={(el) => {
-                        editInput.current = el
-                      }}
-                      rows={1}
-                      value={draft}
-                      onChange={(e) => setDraft(e.target.value)}
-                      onBlur={() => commitEdit('stay')}
-                    />
-                  ) : isEditing ? (
-                    <input
-                      ref={(el) => {
-                        editInput.current = el
-                      }}
-                      value={draft}
-                      onChange={(e) => setDraft(e.target.value)}
-                      onBlur={() => commitEdit('stay')}
-                    />
-                  ) : value === '' ? (
-                    <span className="iv-grid-placeholder">{col.placeholder ?? ''}</span>
-                  ) : (
-                    value
-                  )}
-                </div>
-              )
-            })}
+    <div
+      className="iv-grid"
+      ref={container}
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      onCopy={onCopy}
+      onCut={onCut}
+      onPaste={onPaste}
+    >
+      <div className="iv-grid-row iv-grid-head" style={{ gridTemplateColumns: template }}>
+        <div className="iv-grid-gutter" />
+        {columns.map((col) => (
+          <div className="iv-grid-cell" key={col.key} title={col.header}>
+            {col.header}
+            {col.required === true && <span className="iv-muted"> *</span>}
           </div>
         ))}
-
-        <div className="iv-grid-foot">
-          <Button
-            size="sm"
-            onClick={() => onRowsChange([...rows, makeRow(columns)])}
-            title="Append a blank row"
-          >
-            <Plus size={12} /> Add row
-          </Button>
-          <span className="iv-hint">
-            <Kbd>⌘V</Kbd> paste grows the grid · <Kbd>⌘D</Kbd> fill down · <Kbd>⌘Z</Kbd> undo
-            {columns.some((c) => c.multiline === true) && (
-              <>
-                {' '}
-                · <Kbd>⇧↵</Kbd> soft return
-              </>
-            )}
-          </span>
-          {footerNote !== undefined && <span className="iv-hint" style={{ marginLeft: 'auto' }}>{footerNote}</span>}
-        </div>
       </div>
-    </>
+
+      {rows.map((row, r) => (
+        <div className="iv-grid-row" key={row.key} style={{ gridTemplateColumns: template }}>
+          <div className="iv-grid-gutter">
+            {r + 1}
+            <button
+              className="iv-grid-del"
+              title="Delete row"
+              onClick={() => deleteRow(r)}
+              tabIndex={-1}
+            >
+              <Trash2 size={11} />
+            </button>
+          </div>
+
+          {columns.map((col, c) => {
+            const selected = r >= rect.top && r <= rect.bottom && c >= rect.left && c <= rect.right
+            const isActive = focus.r === r && focus.c === c
+            const isEditing = editing !== null && editing.r === r && editing.c === c
+            const value = row.cells[col.key] ?? ''
+            const invalid = col.required === true && value.trim() === '' && !isRowBlank(row)
+
+            const classes = ['iv-grid-cell']
+            if (selected) classes.push('iv-grid-cell--sel')
+            if (isActive) classes.push('iv-grid-cell--active')
+            if (isEditing) classes.push('iv-grid-cell--editing')
+            // The floating editor needs the cell to stop clipping, and the
+            // cell's own ring would cut across it at the first line.
+            if (isEditing && col.multiline === true) classes.push('iv-grid-cell--editing-multi')
+            if (invalid) classes.push('iv-grid-cell--invalid')
+            if (dirtyCells?.has(`${row.key}:${col.key}`) === true) classes.push('iv-grid-cell--dirty')
+            if (col.mono === true) classes.push('iv-mono')
+
+            return (
+              <div
+                key={col.key}
+                ref={isActive ? activeCell : undefined}
+                className={classes.join(' ')}
+                onMouseDown={(e) => onCellMouseDown(r, c, e)}
+                onMouseEnter={() => {
+                  if (dragging.current) setFocus({ r, c })
+                }}
+                onDoubleClick={() => beginEdit({ r, c })}
+                title={value === '' ? undefined : value}
+              >
+                {isEditing && col.multiline === true ? (
+                  <textarea
+                    ref={(el) => {
+                      editInput.current = el
+                    }}
+                    rows={1}
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onBlur={() => commitEdit('stay')}
+                  />
+                ) : isEditing ? (
+                  <input
+                    ref={(el) => {
+                      editInput.current = el
+                    }}
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onBlur={() => commitEdit('stay')}
+                  />
+                ) : value === '' ? (
+                  <span className="iv-grid-placeholder">{col.placeholder ?? ''}</span>
+                ) : (
+                  value
+                )}
+              </div>
+            )
+          })}
+        </div>
+      ))}
+    </div>
   )
 }
