@@ -2,7 +2,6 @@
 // its dependencies (pages, hooks) must exist first.
 
 import { useState } from 'react'
-import './orgTheme.css'
 import './app.css'
 import { Products } from './pages/Products'
 import { Pieces } from './pages/Pieces'
